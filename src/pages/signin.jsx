@@ -2,11 +2,14 @@ import React from 'react'
 import {useState,useContext,useEffect} from 'react'
 import {AuthContext} from "../context/AuthProvider"
 import {storage,database} from "../../src/firebase"
+import instaLogo from "../images/instaLogo.png"
+import instaLoad from "../images/instaLoad.png"
+
 function SignIn(props){
     let [email,setEmail] = useState("");
     let [password,setPassword] = useState("");
     let [error,setError] = useState(false);
-    let [loginLoader,setLoader] = useState(false);
+    let [loader,setLoader] = useState(true);
     let [fullName,setName] = useState("");
     const[file,setFile] = useState(null);
     let {genericSignUp,currentUser} = useContext(AuthContext);
@@ -74,27 +77,45 @@ function SignIn(props){
             props.history.push('/feed');
         }
     },)
+    useEffect(()=>{
+        setLoader(false);
+    },[])
     
     return(
-        <div>
-            <div>
-                <input type="email"  value={email} placeholder="Enter Email" onChange={handleMail}></input>
-            </div>
+        loader?<div style={{height:"100vh",width:"100%",background:"gray"}}>
+        <img style={{height:"9rem",width:"9rem",color:"black",position:"fixed",top: "50%",
+        left: "50%", transform: "translate(-50%, -50%)"}}src={instaLoad}/>
+        </div>:
+        <div style={{height:"100vh",backgroundColor:"#FAFAFA"}}>
+            <div className="signUp-box" style={{height:"62vh",width:"22rem",backgroundColor:"white",display:"flex",flexDirection:"column",
+                    alignItems:"center",border:"0.5px solid lightgray",position:"fixed",top: "50%",
+                    left: "50%", transform: "translate(-50%, -50%)"}}>
+                        <div style={{marginBottom:"1.7rem"}} >
+                            <img src={instaLogo}/>
+                        </div>
+                    <div>
+                        <input type="email" style={{borderRadius:"3px" ,fontSize:"12px", height:"1.8rem",width:"14rem",backgroundColor:"#FAFAFA",border:"0.5px solid lightgray",marginBottom:"0.5rem"}} value={email} placeholder="Email" onChange={handleMail}></input>
+                    </div>
 
-            <div>
-                <input type="password" value={password} placeholder="Enter Password" onChange={handlePassword}></input>
-            </div>
+                    <div>
+                        <input style={{borderRadius:"3px" ,fontSize:"12px",height:"1.8rem",width:"14rem",backgroundColor:"#FAFAFA",border:"0.5px solid lightgray",marginBottom:"0.5rem"}} type="password" value={password} placeholder="Password" onChange={handlePassword}></input>
+                    </div>
 
-            <div>
-                <input type="text"  value={fullName} placeholder="Enter Full Name" onChange={handleName}></input>
-            </div> 
+                    <div>
+                        <input style={{borderRadius:"3px" ,fontSize:"12px",height:"1.8rem",width:"14rem",backgroundColor:"#FAFAFA",border:"0.5px solid lightgray",marginBottom:"0.8rem"}} type="text"  value={fullName} placeholder="Full Name" onChange={handleName}></input>
+                    </div> 
 
-            <div>
-                <input type="file" accept="image/*" onChange={handleUpload}></input>
-            </div>
-            
-            <div>
-                <input type="button" onClick={handleSignUp} value="Sign Up"></input>
+                    <div>
+                        <input style={{marginBottom:"0.9rem"}} type="file" accept="image/*" onChange={handleUpload}></input>
+                    </div>
+                    
+                    <div>
+                        <input type="button" style={{borderRadius:"3px" ,fontSize:"12px",backgroundColor:"#0095F6",color:"white",height:"1.9rem",width:"14rem",borderRadius:"6px",fontFamily:"revert",fontSize:"15px",border:"none"}} onClick={handleSignUp} value="Sign Up"></input>
+                    </div>
+
+                    <div style={{marginTop:"2rem"}}>
+                        Have an account? <span style={{color:"#0095F6",}}>Log in</span>
+                    </div>
             </div>
         </div>
     )

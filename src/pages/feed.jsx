@@ -2,6 +2,8 @@ import React,{useContext,useEffect,useState} from 'react'
 import {AuthContext} from '../context/AuthProvider'
 import firebase, {database,storage} from "../firebase";
 import uuid from 'react-uuid'
+import instaLoad from "../../src/images/instaLoad.png"
+import insta from "../../src/images/instaLogo.png"
 function Feed(){
 
     let {currentUser} = useContext(AuthContext);
@@ -16,7 +18,7 @@ function Feed(){
     },[])
 
     return(
-        loader?<img src="instaLoad.png"></img>:
+        loader?<img src={instaLoad}></img>:
         <div>
             <Header user = {user}></Header>
             <Upload user={user} uid={currentUser.uid}> </Upload>
@@ -172,7 +174,7 @@ function Header(props){
         <div style={styled1}>
             
             <span style={{height:"100%",alignSelf:"flex-start",position:"absolute",left:"10rem",display:"flex",alignItems:'center',}}>
-             <img style={{height:"85%",background:"transparent",objectFit:"contain"}} src="insta.png" />
+             <img style={{height:"100%",background:"transparent",objectFit:"contain"}} src={insta} />
             </span>
 
             <div style={{display:"flex", height:"100%",width:"22%",alignItems:"center", position:"absolute",right:"9rem"}}>
