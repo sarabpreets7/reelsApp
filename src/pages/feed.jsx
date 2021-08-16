@@ -4,6 +4,11 @@ import firebase, {database,storage} from "../firebase";
 import uuid from 'react-uuid'
 import instaLoad from "../../src/images/instaLoad.png"
 import insta from "../../src/images/instaLogo.png"
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
 function Feed(){
 
     let {currentUser} = useContext(AuthContext);
@@ -21,12 +26,27 @@ function Feed(){
         loader?<img src={instaLoad}></img>:
         <div>
             <Header user = {user}></Header>
-            <Upload user={user} uid={currentUser.uid}> </Upload>
+            <UploadButtons user={user} uid={currentUser.uid} ></UploadButtons>
+            {/* <Upload user={user} uid={currentUser.uid}> </Upload> */}
             <Reels></Reels>
         </div>
     )
 }
-function Upload(props){
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    },
+    input: {
+      display: 'none',
+    },
+  }));
+  
+function UploadButtons(props) {
+    const classes = useStyles();
+  
     const handleUpload =(e)=>{
         let file = e?.target?.files[0];
         if(file!=null){
@@ -73,15 +93,88 @@ function Upload(props){
             }
         }
     }
+    return (
+      <div className={classes.root}>
+        <input
+          accept="video/*"
+          className={classes.input}
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={handleUpload}
+        />
+        <label htmlFor="contained-button-file">
+          <Button variant="contained" color="primary" component="span">
+            Upload
+          </Button>
+        </label>
+        <input accept="video/*" className={classes.input} id="icon-button-file" type="file" onChange={handleUpload} />
+        <label htmlFor="icon-button-file">
+          <IconButton color="primary" aria-label="upload picture" component="span">
+            <PhotoCamera />
+          </IconButton>
+        </label>
+      </div>
+    );
+  }
 
-    return(
-        <div>
-            <div>
-                <input type="file" accept="video/*" onChange={handleUpload}/>
-            </div>
-        </div>
-    )
-}
+
+// function Upload(props){
+//     const handleUpload =(e)=>{
+//         let file = e?.target?.files[0];
+//         if(file!=null){
+//             try{
+//                 let ruid = uuid();
+//                 console.log("ruid-",ruid);
+
+//                 const uploadListener = storage.ref("/reels/"+ ruid).put(file);
+
+//                 uploadListener.on("state_changed",onprogress,onerror,onsucess);
+//                 function onprogress(snapshot){
+//                     let progress = (snapshot.bytesTransferred/ snapshot.totalBytes)*100;
+//                     console.log(progress);
+//                 }
+//                 function onerror(err){
+//                     console.log(err)
+//                 }
+//                 async function onsucess(){
+//                     let downloadUrl = await uploadListener.snapshot.ref.getDownloadURL();
+//                     console.log("video with url",downloadUrl);
+
+//                     let {user,uid} = props;
+
+//                     database.reels.doc(ruid).set({
+//                         videoUrl:downloadUrl,
+//                         authorName: user.fullName,
+//                         authorDPUrl: user.profileUrl,
+//                         likes:[],
+//                         comments:[],
+//                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
+//                     })
+
+//                     let updatedReels= [...user.reels,ruid]
+//                     database.users.doc(uid).update({
+//                         reels : updatedReels,
+//                     })
+
+
+//                 }
+                
+//             }
+//             catch (err){
+
+//             }
+//         }
+//     }
+
+//     return(
+//         <div>
+//             <div>
+//                 <input type="file" accept="video/*" onChange={handleUpload}/>
+//             </div>
+//         </div>
+//     )
+// }
 function Reels(){
     let [reels,setReels] = useState([]);
 
@@ -191,5 +284,6 @@ function Header(props){
         </div>
     )
 }
+// export default Header
 
 export default Feed

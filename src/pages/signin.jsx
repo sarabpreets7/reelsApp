@@ -87,7 +87,7 @@ function SignIn(props){
         left: "50%", transform: "translate(-50%, -50%)"}}src={instaLoad}/>
         </div>:
         <div style={{height:"100vh",backgroundColor:"#FAFAFA"}}>
-            <div className="signUp-box" style={{height:"62vh",width:"22rem",backgroundColor:"white",display:"flex",flexDirection:"column",
+            <div className="signUp-box" style={{height:"68vh",width:"22rem",backgroundColor:"white",display:"flex",flexDirection:"column",
                     alignItems:"center",border:"0.5px solid lightgray",position:"fixed",top: "50%",
                     left: "50%", transform: "translate(-50%, -50%)"}}>
                         <div style={{marginBottom:"1.7rem"}} >
