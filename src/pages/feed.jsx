@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
+
 function Feed(){
 
     let {currentUser} = useContext(AuthContext);
@@ -24,11 +25,11 @@ function Feed(){
 
     return(
         loader?<img src={instaLoad}></img>:
-        <div>
+        <div style={{overflow:"hidden",boxSizing:"border-box",margin:"0"}}>
             <Header user = {user}></Header>
             <UploadButtons user={user} uid={currentUser.uid} ></UploadButtons>
             {/* <Upload user={user} uid={currentUser.uid}> </Upload> */}
-            <Reels></Reels>
+            <Reels user={user}></Reels>
         </div>
     )
 }
@@ -108,12 +109,12 @@ function UploadButtons(props) {
             Upload
           </Button>
         </label>
-        <input accept="video/*" className={classes.input} id="icon-button-file" type="file" onChange={handleUpload} />
+        {/* <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={handleUpload} />
         <label htmlFor="icon-button-file">
           <IconButton color="primary" aria-label="upload picture" component="span">
             <PhotoCamera />
           </IconButton>
-        </label>
+        </label> */}
       </div>
     );
   }
@@ -175,9 +176,10 @@ function UploadButtons(props) {
 //         </div>
 //     )
 // }
-function Reels(){
+function Reels(props){
     let [reels,setReels] = useState([]);
-
+    let user = props
+    //console.log(user.user.profileUrl)
     const handleMuted = function(e){
         e.target.muted = !e.target.muted;
     }
@@ -216,8 +218,13 @@ function Reels(){
                         }}>
                             <div className="header" style={{alignItems:"center",display:"flex",margin:"0.6rem",fontFamily:"cursive"}}>
                                 <img style={{height:"30px",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"0.5rem"}} src={object.authorDPUrl} />
-                                <div>
+                                <div style={{width:"50%"}}>
                                     {object.authorName}
+                                </div>
+                                <div style={{display:"flex",width:"50%",flexDirection:"row-reverse"}}>
+                                    {user.user.profileUrl?user.user.profileUrl!=object.authorDPUrl?
+                                  <Button  variant="contained" color="primary" >follow</Button>:<></>:<></>}
+                                  
                                 </div>
                                 
                             </div>

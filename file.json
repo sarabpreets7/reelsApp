@@ -1,0 +1,37 @@
+[
+    {
+        "name": "steve",
+        "lastname": "rogers",
+        "age": 30,
+        "friends": [
+            "steve",
+            "bruce",
+            "peter"
+        ],
+        "prop": null,
+        "prop-again": "",
+        "key": {
+            "new": "New Object"
+        }
+    },
+    {},
+    {
+        "name": "sarab",
+        "friends": []
+    },
+    {
+        "name": "steve",
+        "lastname": "rogers",
+        "age": 30,
+        "friends": [
+            "steve",
+            "bruce",
+            "peter"
+        ],
+        "prop": null,
+        "prop-again": "",
+        "key": {
+            "new": "New Object"
+        }
+    }
+]

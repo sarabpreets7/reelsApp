@@ -3,6 +3,8 @@ import firebase from "../firebase"
 import { AuthContext } from "../../src/context/AuthProvider"
 import instaLoad from "../images/instaLoad.png"
 import instaLogo from "../images/instaLogo.png"
+import CustomizedButtons2 from './buttons'
+
 const auth = firebase.auth();
 function Login(props){
     let [email,setEmail] = useState("");
@@ -12,6 +14,7 @@ function Login(props){
     
     let {genericLogin,currentUser} = useContext(AuthContext)
     const loginFunc = async() =>{
+        console.log('ran')
         try{
             setLoader(true);
             // let res = await auth.signInWithEmailAndPassword(email,password);
@@ -69,8 +72,9 @@ function Login(props){
                         }}/>
 
                     </div>
-
-                    <button style={{backgroundColor:"#0095F6",color:"white",height:"1.9rem",width:"14rem",borderRadius:"6px",fontFamily:"revert",fontSize:"15px",border:"none"}} onClick={loginFunc}>Login</button>
+                        <div onClick={loginFunc}> 
+                            <CustomizedButtons2 text={"login"}></CustomizedButtons2>
+                        </div>
                     <div style={{fontSize:"12px",marginTop:"2rem"}}>Forgot password?</div>
 
                     <div style={{marginTop:"2rem"}}>

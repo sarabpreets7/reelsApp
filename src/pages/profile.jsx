@@ -14,13 +14,14 @@ function Profile(){
     let [profile,setProfile] = useState(null);
     let[followers,setFollowers] = useState(0);
     let[following,setFollowing] = useState(0);
+    let [boolean,setBoolean] = useState(false)
 
     useEffect( async()=>{
         let user = await database.users.doc(currentUser.uid).get()
         console.log(currentUser.uid)
         //console.log("in feed: ",user.data());
         await setUser(user.data()) 
-        setFollowing(user.data().followers)
+        setFollowers(user.data().followers)
         setFollowing(user.data().following)
         await setProfile(user.data().profileUrl);
         
@@ -37,6 +38,25 @@ function Profile(){
         setLoader(false);
         
     },[])
+
+    const handleClick =(e)=>{
+        if(!boolean){
+            let n = followers +1
+            database.users.doc(currentUser.uid).update({
+                followers:n
+            })
+            setBoolean(true);
+        }
+        else{
+            let n = followers -1
+            database.users.doc(currentUser.uid).update({
+                followers:n
+            })
+            setBoolean(false)
+        }
+        
+       
+    }
     return(
         loader?<div style={{height:"100vh",width:"100%",background:"gray"}}>
         <img style={{height:"9rem",width:"9rem",color:"black",position:"fixed",top: "50%",
@@ -52,14 +72,14 @@ function Profile(){
                     <img style={{height:"70%",borderRadius:"50%",marginTop:"15%"}}src={profile}></img>
                 </div>
 
-                <div style={{height:"60%",width:"17rem",marginTop:"2rem",marginLeft:"21%",display:"flex",flexDirection:"column",justifyContent:"space-around"}}>
-                    <div style={{display:"flex",justifyContent:"space-between"}}>
-                            <div style={{fontSize:"28px",fontFamily:"Arial",fontWeight:"200"}}>
+                <div style={{height:"60%",width:"18rem",marginTop:"2rem",marginLeft:"19%",display:"flex",flexDirection:"column",justifyContent:"space-around"}}>
+                    <div style={{display:"flex",justifyContent:"space-around"}}>
+                            <div style={{fontSize:"24px",fontFamily:"Arial",fontWeight:"200"}}>
                                 {user.fullName}
                             </div>
                             <div>
-                            <Button variant="contained" color="primary">
-                            follow
+                            <Button variant="contained" color="primary" onClick={handleClick}>
+                              {boolean?<span>unfollow</span>:<span>follow</span>}
                             </Button>
                             </div>
                     </div>

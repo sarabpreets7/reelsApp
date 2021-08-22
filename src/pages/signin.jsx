@@ -4,6 +4,7 @@ import {AuthContext} from "../context/AuthProvider"
 import {storage,database} from "../../src/firebase"
 import instaLogo from "../images/instaLogo.png"
 import instaLoad from "../images/instaLoad.png"
+import CustomizedButtons2 from './buttons'
 
 function SignIn(props){
     let [email,setEmail] = useState("");
@@ -109,8 +110,9 @@ function SignIn(props){
                         <input style={{marginBottom:"0.9rem"}} type="file" accept="image/*" onChange={handleUpload}></input>
                     </div>
                     
-                    <div>
-                        <input type="button" style={{borderRadius:"3px" ,fontSize:"12px",backgroundColor:"#0095F6",color:"white",height:"1.9rem",width:"14rem",borderRadius:"6px",fontFamily:"revert",fontSize:"15px",border:"none"}} onClick={handleSignUp} value="Sign Up"></input>
+                    <div onClick={handleSignUp}>
+                        <CustomizedButtons2 text={"Sign up"}></CustomizedButtons2>
+                        
                     </div>
 
                     <div style={{marginTop:"2rem"}}>
