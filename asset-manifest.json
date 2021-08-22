@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/reelsApp/static/css/main.a617e044.chunk.css",
+    "main.js": "/reelsApp/static/js/main.7d568572.chunk.js",
+    "main.js.map": "/reelsApp/static/js/main.7d568572.chunk.js.map",
+    "runtime-main.js": "/reelsApp/static/js/runtime-main.49b0df05.js",
+    "runtime-main.js.map": "/reelsApp/static/js/runtime-main.49b0df05.js.map",
+    "static/js/2.44e73f34.chunk.js": "/reelsApp/static/js/2.44e73f34.chunk.js",
+    "static/js/2.44e73f34.chunk.js.map": "/reelsApp/static/js/2.44e73f34.chunk.js.map",
+    "static/js/3.59c6e087.chunk.js": "/reelsApp/static/js/3.59c6e087.chunk.js",
+    "static/js/3.59c6e087.chunk.js.map": "/reelsApp/static/js/3.59c6e087.chunk.js.map",
+    "index.html": "/reelsApp/index.html",
+    "static/css/main.a617e044.chunk.css.map": "/reelsApp/static/css/main.a617e044.chunk.css.map",
+    "static/js/2.44e73f34.chunk.js.LICENSE.txt": "/reelsApp/static/js/2.44e73f34.chunk.js.LICENSE.txt",
+    "static/media/instaLoad.54769301.png": "/reelsApp/static/media/instaLoad.54769301.png",
+    "static/media/logo.6ce24c58.svg": "/reelsApp/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.49b0df05.js",
+    "static/js/2.44e73f34.chunk.js",
+    "static/css/main.a617e044.chunk.css",
+    "static/js/main.7d568572.chunk.js"
+  ]
+}
