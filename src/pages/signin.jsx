@@ -5,6 +5,7 @@ import {storage,database} from "../../src/firebase"
 import instaLogo from "../images/instaLogo.png"
 import instaLoad from "../images/instaLoad.png"
 import CustomizedButtons2 from './buttons'
+import {Link} from "react-router-dom"
 
 function SignIn(props){
     let [email,setEmail] = useState("");
@@ -116,7 +117,7 @@ function SignIn(props){
                     </div>
 
                     <div style={{marginTop:"2rem"}}>
-                        Have an account? <span style={{color:"#0095F6",}}>Log in</span>
+                        Have an account?<Link to="/login" style={{textDecoration:"none"}}><span style={{color:"#0095F6",}}>Log in</span></Link> 
                     </div>
             </div>
         </div>

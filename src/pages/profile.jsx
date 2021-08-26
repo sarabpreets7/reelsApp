@@ -5,6 +5,11 @@ import instaLoad from "../images/instaLoad.png"
 import Header from './Header';
 import MovieFilterOutlinedIcon from '@material-ui/icons/MovieFilterOutlined';
 import Button from '@material-ui/core/Button';
+import MediaCard from './video';
+import CardMedia from '@material-ui/core/CardMedia';
+import VideoPlayer from "react-video-js-player"
+import { object } from 'prop-types';
+
 
 function Profile(){
     let {currentUser} = useContext(AuthContext);
@@ -78,7 +83,7 @@ function Profile(){
                                 {user.fullName}
                             </div>
                             <div>
-                            <Button variant="contained" color="primary" onClick={handleClick}>
+                            <Button size="small" variant="contained" color="primary" onClick={handleClick}>
                               {boolean?<span>unfollow</span>:<span>follow</span>}
                             </Button>
                             </div>
@@ -120,8 +125,11 @@ function Profile(){
             <div style={{backgroundColor:"#FAFAFA",width:"72%",display:"flex",flexWrap:"wrap"}}>
                {reels.map(function(obj){
                    return(
+                       
                        <div style={{height:"16rem",width:"30%",margin:"10px"}}className="reel-container">
                            <video style={{height:"100%",width:"100%"}} src={obj}/>
+                           {/* <MediaCard component="video" style={{height:"100%",width:"100%"}} src={obj} autoPlay></MediaCard> */}
+                           {/* <VideoPlayer type= 'video/mp4' src={obj} poster={instaLoad}></VideoPlayer> */}
                        </div>
                    )
                })}

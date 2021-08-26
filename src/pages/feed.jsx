@@ -8,6 +8,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import "./feed.css"
+import {Link} from "react-router-dom"
+
+import ReactDOM from 'react-dom';
 
 
 function Feed(){
@@ -16,10 +20,17 @@ function Feed(){
     let [user,setUser] = useState(null);
     let [loader,setLoader] = useState(true);
 
+
+    function callBack(entries){
+        console.log(entries)
+    }
     useEffect( async()=>{
         let user = await database.users.doc(currentUser.uid).get()
         console.log("in feed: ",user.data());
         setUser(user.data()) 
+
+
+        
         setLoader(false);
     },[])
 
@@ -179,11 +190,47 @@ function UploadButtons(props) {
 function Reels(props){
     let [reels,setReels] = useState([]);
     let user = props
-    //console.log(user.user.profileUrl)
-    const handleMuted = function(e){
+    
+    const handleMuted = async(e)=>{
+        console.log("hhhhh"+e)
         e.target.muted = !e.target.muted;
     }
-    useEffect(async ()=>{
+    const handleAutoScroll= async(e)=>
+ {
+   console.log(e.target);
+  //  console.log(ReactDOM.findDOMNode(e.target).parentNode.nextSibling)
+   let next = ReactDOM.findDOMNode(e.target).parentNode.parentNode.parentNode.nextSibling;
+   console.log(next)
+   if(next)
+   {
+       console.log("next exist")
+    //  window.scrollTop(next).offset().top();
+    next.scrollIntoView({behavior:'smooth'});
+    e.target.muted=true;
+   }
+ }
+ 
+ function callBack(entries){
+     //console.log(entries)
+     entries.forEach((entry)=>{
+         
+         let child = entry.target.children[0]
+         child.play().then(function(){
+             if(entry.isIntersecting==false){
+                 child.pause()
+             }
+         })
+     })
+    //  let entry = entries[0].target;
+    // entries[0].play()
+    //  console.log(entry)
+    // entry.play().then(function(){
+    //     if(entries[0].isIntersecting==false){
+    //         entry.pause()
+    //     }
+    // })
+}
+    useEffect(async function fn(){
         let entries = await database.reels.orderBy("createdAt","desc").get();
         let arr=[];
         entries.forEach((entry) => {
@@ -191,6 +238,17 @@ function Reels(props){
             arr.push(newentry);
         })
         setReels(arr);
+
+        let conditionObject = {
+            root:null,
+            threshold:"0.9"
+        }
+        let observer = new IntersectionObserver(callBack,conditionObject);
+        let elements = document.querySelectorAll(".video");
+        console.log(elements)
+        elements.forEach((el)=>{
+            observer.observe(el)
+        })
         
     },[])
     return(
@@ -231,18 +289,19 @@ function Reels(props){
 
                             <div style={{height:"90%",display:"flex", justifyContent:"center",borderTop:"0.25px solid lightgray"}}>
 
-                            <div className="video" style={{height:"90%"}}>
-                                <video style={{
-                                height:"90%",
-                                width:"100%",
-                                
+                                <div className="video" style={{height:"90%"}}>
+                                    <video style={{
+                                    height:"90%",
+                                    width:"100%",
+                                    
 
-                                }} src={object.videoUrl} autoPlay={true}
-                                muted={true}
-                                controls={true}
-                                onClick={handleMuted}
-                                autoPlay={true}></video>
-                            </div>
+                                    }} src={object.videoUrl}
+                                    onEnded={handleAutoScroll}
+                                    muted="muted"
+                                    controls={true}
+                                    onClick={handleMuted}
+                                    ></video>
+                                </div>
                             </div>
                         </div>
                     )
@@ -257,6 +316,10 @@ function Reels(props){
 }
 function Header(props){
     let {user} = props;
+
+    const handleSignOut =(e)=>{
+        firebase.auth().signOut();
+    }
 
     let styled1 = {height:"7vh",
                   border:"1px solid lightgray",
@@ -273,11 +336,12 @@ function Header(props){
     return(
         <div style={styled1}>
             
-            <span style={{height:"100%",alignSelf:"flex-start",position:"absolute",left:"10rem",display:"flex",alignItems:'center',}}>
+            <Link to="/feed" style={{height:"100%",alignSelf:"flex-start",position:"absolute",left:"10rem",display:"flex",alignItems:'center',}}>
              <img style={{height:"100%",background:"transparent",objectFit:"contain"}} src={insta} />
-            </span>
+            </Link>
 
-            <div style={{display:"flex", height:"100%",width:"22%",alignItems:"center", position:"absolute",right:"9rem"}}>
+            <div to="/profile" style={{display:"flex", textDecoration:"none",height:"100%",width:"22%",alignItems:"center", position:"absolute",right:"9rem"}}>
+                <Link to="/profile" style={{display:"flex",alignItems:"center",textDecoration:"none",color:"black"}}>
                 <div style={{marginRight:"10px"}}>{user?.fullName}</div>
                     <img style={{
                         height:"40px",
@@ -285,7 +349,14 @@ function Header(props){
                         marginRight:"15px",
                         
                     }} src= {user?.profileUrl}></img>
+                    </Link>
+
+                <div onClick={handleSignOut} className="logout">
+                    Log out
+                </div>
+                
             </div>
+            
                     
             
         </div>
