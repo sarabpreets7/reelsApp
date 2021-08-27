@@ -6,7 +6,7 @@ import instaLoad from "../../src/images/instaLoad.png"
 import insta from "../../src/images/instaLogo.png"
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import "./feed.css"
 import {Link} from "react-router-dom"
@@ -15,7 +15,16 @@ import ReactDOM from 'react-dom';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import AddCommentIcon from '@material-ui/icons/AddComment';
-
+import MediaCard from './modal';
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
 
 function Feed(){
 
@@ -209,6 +218,7 @@ function Reels(props){
     let [liked,setLike] = useState(false)
     let [totalLikes,handleLikes] = useState(0)
     let {currentUser} = useContext(AuthContext);
+    const [openId, setOpenId] = useState(null);
     let uid = currentUser.uid;
     
     let user = props
@@ -218,27 +228,33 @@ function Reels(props){
         console.log("hhhhh"+e)
         e.target.muted = !e.target.muted;
     }
-    const handleLike = async (e,tar)=>{
-        console.log(e)
-        let reel = await database.reels.doc(e).get()
+    const handleLike = async (tar)=>{
+        console.log(tar)
+        let el = await document.getElementById(tar+"heart")
+        console.log(el)
+        let reel = await database.reels.doc(tar).get()
         let likes = reel.data().likes
         console.log(likes)
         if(likes.includes(uid) && likes.length!=0){
             let newlikes = likes.filter(function(data){
                 return data!=uid
             })
-            database.reels.doc(e).update({
+            database.reels.doc(tar).update({
                 "likes":[...newlikes]
             })
-            setLike(false)
+            
+            el.style.color="lightgray"
+            
 
         }
 
         else{
-            database.reels.doc(e).update({
+            database.reels.doc(tar).update({
                 "likes":[...likes,uid]
             })
-            setLike(false)
+            el.style.color="red"
+
+            
         }
         
 
@@ -258,6 +274,12 @@ function Reels(props){
     e.target.muted=true;
    }
  }
+ const handleClickOpen = (id) => {
+    setOpenId(id);
+  }
+  const handleClose = () => {
+    setOpenId(null);
+  };
  
  function callBack(entries){
      //console.log(entries)
@@ -286,6 +308,7 @@ function Reels(props){
             console.log(entry.id)
             let newentry = entry.data();
            // console.log(newentry.likes.length)
+
            let obj={"id":entry.id,"object":newentry}
             arr.push(obj);
         })
@@ -304,6 +327,7 @@ function Reels(props){
         })
         
     },[])
+    
      
     return(
         <div style={{backgroundColor:"#FAFAFA"}}>
@@ -354,14 +378,49 @@ function Reels(props){
                                     id = {object.id}
                                     onEnded={handleAutoScroll}
                                     muted="muted"
-                                    controls={true}
+                                    
                                     onClick={handleMuted}
                                     ></video>
                                 </div>
-                                <div style={{position:"absolute",bottom:"16%",left:"2%"}}>
-                                    <FavoriteIcon className="heart" onClick={()=>{handleLike(object.id,this)}} style={{color:'lightgray'}}></FavoriteIcon>
-                                    <AddCommentIcon className="comment" color="primary" style={{color:'lightgray',position:"absolute"}}></AddCommentIcon>
-                                    <span>{object.object.likes.length}</span>
+                                <div style={{position:"absolute",bottom:"4rem",left:"2%"}}>
+                                    <div>
+                                       
+                                        <FavoriteIcon id={object.id+"heart"} className="heart" onClick={()=>{handleLike(object.id)}}  style={object.object.likes.includes(currentUser.uid)?{color:"red"}:{color:"lightgray"}} ></FavoriteIcon>
+                                        <AddCommentIcon className="comment" color="primary" onClick={() => handleClickOpen(object.id)} style={{color:'lightgray',position:"absolute"}}></AddCommentIcon>
+                                    <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === object.id}>
+                                                <MuiDialogContent>
+                                                <div className="modal" style={{display:"flex",height:"80vh",width:"60vw"}}>
+                                                    <div className="video-container" style={{width:"50%"}}>
+                                                        <video controls={true} src={object.object.videoUrl} style={{width:"90%",height:"100%"}}></video>
+                                                    </div>
+
+                                                    <div style={{width:"50%"}} className="comment-section">
+                                                        <div className="authordiv" style={{display:"flex",alignItems:"center",width:"100%",borderBottom:"1px solid lightgray"}}>
+                                                             <img style={{height:"4rem",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"3.4rem",margin:"1.2rem"}} src={object.object.authorDPUrl} />
+                                                            <div style={{width:"50%"}}>
+                                                                {object.object.authorName}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="commentss" style={{height:"65%"}}>
+
+                                                        </div>
+                                                        <div className="comment-section" style={{width:"100%",display:"flex",alignItems:"center"}}>
+                                                            <TextField style={{width:"75%"}}label="Add a Comment"></TextField>
+                                                            <Button variant="contained">POST</Button>
+                                                        </div>
+
+                                                    </div>
+                                                    
+
+                                                </div>
+                                                    
+                                                
+                                        </MuiDialogContent>
+                                    </Dialog>
+                                    </div>
+                                    
+                                    <span>{object.object.likes.length} Likes</span>
                                 </div>
                                
                                 

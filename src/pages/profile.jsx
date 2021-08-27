@@ -9,7 +9,9 @@ import MediaCard from './video';
 import CardMedia from '@material-ui/core/CardMedia';
 import VideoPlayer from "react-video-js-player"
 import { object } from 'prop-types';
-
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
 
 function Profile(){
     let {currentUser} = useContext(AuthContext);
@@ -20,6 +22,7 @@ function Profile(){
     let[followers,setFollowers] = useState(0);
     let[following,setFollowing] = useState(0);
     let [boolean,setBoolean] = useState(false)
+    const [openId, setOpenId] = useState(null);
 
     useEffect( async()=>{
         let user = await database.users.doc(currentUser.uid).get()
@@ -38,11 +41,18 @@ function Profile(){
             let reel = await database.reels.doc(reels[i]).get();
             arr.push(reel.data().videoUrl)
         }
-        console.log(arr)
+        
         setReels(arr)
+        console.log(reels)
         setLoader(false);
         
     },[])
+    const handleClickOpen = (id) => {
+        setOpenId(id);
+      }
+      const handleClose = () => {
+        setOpenId(null);
+      };
 
     const handleClick =(e)=>{
         if(!boolean){
@@ -128,9 +138,39 @@ function Profile(){
                        
                        <div style={{height:"16rem",width:"30%",margin:"10px"}}className="reel-container">
                            <video style={{height:"100%",width:"100%"}} src={obj}/>
-                           {/* <MediaCard component="video" style={{height:"100%",width:"100%"}} src={obj} autoPlay></MediaCard> */}
-                           {/* <VideoPlayer type= 'video/mp4' src={obj} poster={instaLoad}></VideoPlayer> */}
+                           <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === object.id}>
+                                                <MuiDialogContent>
+                                                <div className="modal" style={{display:"flex",height:"80vh",width:"40vw"}}>
+                                                    <div className="video-container" style={{width:"80%"}}>
+                                                        <video controls={true} src={obj} style={{width:"90%",height:"100%"}}></video>
+                                                    </div>
+
+                                                    {/* <div style={{width:"50%"}} className="comment-section">
+                                                        <div className="authordiv" style={{display:"flex",alignItems:"center",width:"100%",borderBottom:"1px solid lightgray"}}>
+                                                             <img style={{height:"4rem",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"3.4rem",margin:"1.2rem"}} src={object.object.authorDPUrl} />
+                                                            <div style={{width:"50%"}}>
+                                                                {object.object.authorName}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="commentss" style={{height:"65%"}}>
+
+                                                        </div>
+                                                        <div className="comment-section" style={{width:"100%",display:"flex",alignItems:"center"}}>
+                                                            <TextField style={{width:"75%"}}label="Add a Comment"></TextField>
+                                                            <Button variant="contained">POST</Button>
+                                                        </div>
+
+                                                    </div> */}
+                                                    
+
+                                                </div>
+                                                    
+                                                
+                                        </MuiDialogContent>
+                                    </Dialog>
                        </div>
+
                    )
                })}
 
