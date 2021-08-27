@@ -69,7 +69,7 @@ function Profile(){
         </div>:
         <div >
             <Header user={user}/>
-        <div style={{height:"100vh",backgroundColor:"#FAFAFA",display:"flex",flexDirection:"column",alignItems:"center"}}>
+        <div style={{backgroundColor:"#FAFAFA",display:"flex",flexDirection:"column",alignItems:"center"}}>
             
             <div className="header" style={{display:"flex",backgroundColor:"#FAFAFA",width:"55%",height:"14rem",alignItems:"stretch"}}>
 

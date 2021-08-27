@@ -10,8 +10,11 @@ import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import "./feed.css"
 import {Link} from "react-router-dom"
-
+import LinearWithValueLabel from './load';
 import ReactDOM from 'react-dom';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import AddCommentIcon from '@material-ui/icons/AddComment';
 
 
 function Feed(){
@@ -19,6 +22,7 @@ function Feed(){
     let {currentUser} = useContext(AuthContext);
     let [user,setUser] = useState(null);
     let [loader,setLoader] = useState(true);
+    
 
 
     function callBack(entries){
@@ -38,7 +42,11 @@ function Feed(){
         loader?<img src={instaLoad}></img>:
         <div style={{overflow:"hidden",boxSizing:"border-box",margin:"0"}}>
             <Header user = {user}></Header>
-            <UploadButtons user={user} uid={currentUser.uid} ></UploadButtons>
+            <div style={{display:"flex"}}>
+                <UploadButtons user={user} uid={currentUser.uid} ></UploadButtons>
+                
+            </div>
+            
             {/* <Upload user={user} uid={currentUser.uid}> </Upload> */}
             <Reels user={user}></Reels>
         </div>
@@ -58,7 +66,8 @@ const useStyles = makeStyles((theme) => ({
   
 function UploadButtons(props) {
     const classes = useStyles();
-  
+    let [loadbar,setBar] = useState(false)
+    let [stats,setStats] =  useState(0)
     const handleUpload =(e)=>{
         let file = e?.target?.files[0];
         if(file!=null){
@@ -70,13 +79,18 @@ function UploadButtons(props) {
 
                 uploadListener.on("state_changed",onprogress,onerror,onsucess);
                 function onprogress(snapshot){
+                    setBar(true)
                     let progress = (snapshot.bytesTransferred/ snapshot.totalBytes)*100;
+                    setStats(progress)
+                    console.log(stats)
                     console.log(progress);
                 }
                 function onerror(err){
+                    setBar(false)
                     console.log(err)
                 }
                 async function onsucess(){
+                    setBar(false)
                     let downloadUrl = await uploadListener.snapshot.ref.getDownloadURL();
                     console.log("video with url",downloadUrl);
 
@@ -106,6 +120,7 @@ function UploadButtons(props) {
         }
     }
     return (
+        loadbar?<LinearWithValueLabel value={stats}></LinearWithValueLabel>:
       <div className={classes.root}>
         <input
           accept="video/*"
@@ -126,6 +141,8 @@ function UploadButtons(props) {
             <PhotoCamera />
           </IconButton>
         </label> */}
+        
+        
       </div>
     );
   }
@@ -189,11 +206,43 @@ function UploadButtons(props) {
 // }
 function Reels(props){
     let [reels,setReels] = useState([]);
+    let [liked,setLike] = useState(false)
+    let [totalLikes,handleLikes] = useState(0)
+    let {currentUser} = useContext(AuthContext);
+    let uid = currentUser.uid;
+    
     let user = props
+    
     
     const handleMuted = async(e)=>{
         console.log("hhhhh"+e)
         e.target.muted = !e.target.muted;
+    }
+    const handleLike = async (e,tar)=>{
+        console.log(e)
+        let reel = await database.reels.doc(e).get()
+        let likes = reel.data().likes
+        console.log(likes)
+        if(likes.includes(uid) && likes.length!=0){
+            let newlikes = likes.filter(function(data){
+                return data!=uid
+            })
+            database.reels.doc(e).update({
+                "likes":[...newlikes]
+            })
+            setLike(false)
+
+        }
+
+        else{
+            database.reels.doc(e).update({
+                "likes":[...likes,uid]
+            })
+            setLike(false)
+        }
+        
+
+        
     }
     const handleAutoScroll= async(e)=>
  {
@@ -234,9 +283,13 @@ function Reels(props){
         let entries = await database.reels.orderBy("createdAt","desc").get();
         let arr=[];
         entries.forEach((entry) => {
+            console.log(entry.id)
             let newentry = entry.data();
-            arr.push(newentry);
+           // console.log(newentry.likes.length)
+           let obj={"id":entry.id,"object":newentry}
+            arr.push(obj);
         })
+        console.log(arr)
         setReels(arr);
 
         let conditionObject = {
@@ -251,6 +304,7 @@ function Reels(props){
         })
         
     },[])
+     
     return(
         <div style={{backgroundColor:"#FAFAFA"}}>
             <div className="reels" style={{
@@ -272,15 +326,16 @@ function Reels(props){
                            border:"0.5px solid lightgray",
                            marginBottom:"3rem",
                            flexDirection:"column",
-                           marginLeft:"17rem"
+                           marginLeft:"17rem",
+                           position:"relative"
                         }}>
                             <div className="header" style={{alignItems:"center",display:"flex",margin:"0.6rem",fontFamily:"cursive"}}>
-                                <img style={{height:"30px",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"0.5rem"}} src={object.authorDPUrl} />
+                                <img style={{height:"30px",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"0.5rem"}} src={object.object.authorDPUrl} />
                                 <div style={{width:"50%"}}>
-                                    {object.authorName}
+                                    {object.object.authorName}
                                 </div>
                                 <div style={{display:"flex",width:"50%",flexDirection:"row-reverse"}}>
-                                    {user.user.profileUrl?user.user.profileUrl!=object.authorDPUrl?
+                                    {user.user.profileUrl?user.user.profileUrl!=object.object.authorDPUrl?
                                   <Button  variant="contained" color="primary" >follow</Button>:<></>:<></>}
                                   
                                 </div>
@@ -289,20 +344,29 @@ function Reels(props){
 
                             <div style={{height:"90%",display:"flex", justifyContent:"center",borderTop:"0.25px solid lightgray"}}>
 
-                                <div className="video" style={{height:"90%"}}>
+                                <div className="video" style={{height:"80%"}}>
                                     <video style={{
                                     height:"90%",
                                     width:"100%",
                                     
 
-                                    }} src={object.videoUrl}
+                                    }} src={object.object.videoUrl}
+                                    id = {object.id}
                                     onEnded={handleAutoScroll}
                                     muted="muted"
                                     controls={true}
                                     onClick={handleMuted}
                                     ></video>
                                 </div>
+                                <div style={{position:"absolute",bottom:"16%",left:"2%"}}>
+                                    <FavoriteIcon className="heart" onClick={()=>{handleLike(object.id,this)}} style={{color:'lightgray'}}></FavoriteIcon>
+                                    <AddCommentIcon className="comment" color="primary" style={{color:'lightgray',position:"absolute"}}></AddCommentIcon>
+                                    <span>{object.object.likes.length}</span>
+                                </div>
+                               
+                                
                             </div>
+                            
                         </div>
                     )
                 })}

@@ -1,4 +1,4 @@
 
-.logout:hover{
+.logout:hover,.heart,.comment{
     cursor: pointer;
 }
