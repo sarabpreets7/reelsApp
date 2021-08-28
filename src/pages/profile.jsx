@@ -96,9 +96,9 @@ function Profile(){
                                 {user.fullName}
                             </div>
                             <div>
-                            <Button size="small" variant="contained" color="primary" onClick={handleClick}>
+                            {/* <Button size="small" variant="contained" color="primary" onClick={handleClick}>
                               {boolean?<span>unfollow</span>:<span>follow</span>}
-                            </Button>
+                            </Button> */}
                             </div>
                     </div>
 
@@ -109,11 +109,11 @@ function Profile(){
                         </div>
 
                         <div>
-                            <span style={{fontWeight:"600"}}>{followers}</span> followers
+                            <span style={{fontWeight:"600"}}>{followers.length}</span> followers
                         </div>
 
                         <div>
-                            <span style={{fontWeight:"600"}}>{following}</span> following
+                            <span style={{fontWeight:"600"}}>{following.length}</span> following
                         </div>
                         
                            

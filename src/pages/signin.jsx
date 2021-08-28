@@ -61,6 +61,8 @@ function SignIn(props){
                     email: email,
                     fullName: fullName,
                     profileUrl: downloadUrl,
+                    followers:[],
+                    following:[],
                     reels: [],
                     likes: [],
                     comments: []

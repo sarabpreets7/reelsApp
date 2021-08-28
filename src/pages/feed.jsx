@@ -105,10 +105,11 @@ function UploadButtons(props) {
                     console.log("video with url",downloadUrl);
 
                     let {user,uid} = props;
-
+                    console.log(uid)
                     database.reels.doc(ruid).set({
                         videoUrl:downloadUrl,
                         authorName: user.fullName,
+                         authorid: uid  ,
                         authorDPUrl: user.profileUrl,
                         likes:[],
                         comments:[],
@@ -221,10 +222,11 @@ function Reels(props){
     let {currentUser} = useContext(AuthContext);
     let [comment,updateComment] = useState("")
     const [openId, setOpenId] = useState(null);
+    //  let [user,setUser] = useState(null)
     let uid = currentUser.uid;
     
-    let user = props
     
+    let user=props
     
     const handleMuted = async(e)=>{
         console.log("hhhhh"+e)
@@ -336,7 +338,56 @@ function Reels(props){
 
     
  }
+ const handleFollow=async(e)=>{
+     let no = await e.target.parentNode.id;
+     let user = await database.users.doc(no).get();
+     let followers = user.data().followers
+     console.log(followers)
+     let otheruser = await database.users.doc(currentUser.uid).get()
+     let following = (otheruser.data().following)
+     console.log(following)
+      let object = {"userid": currentUser.uid}
+    //   followers.push(object)
+      console.log(followers)
+      if(followers.includes(currentUser.uid)){
+
+        let newlikes = followers.filter(function(data){
+            return data!=currentUser.uid
+        })
+        database.users.doc(no).update({
+            "followers":[...newlikes]
+        })
+        let newfollowing = following.filter(function(data){
+            return data!=no
+        })
+        database.users.doc(currentUser.uid).update({
+            "following":[...newfollowing]
+        })
+        let elements = document.getElementsByClassName(no+"follow");
+        for(let i=0;i<elements.length;i++){
+            elements[i].innerText="follow"
+        }
+      }
+      else{
+        database.users.doc(no).update({
+            "followers":[...followers,currentUser.uid]
+        })
+
+        database.users.doc(currentUser.uid).update({
+            "following":[...following,no]
+        })
+        let elements = document.getElementsByClassName(no+"follow");
+        for(let i=0;i<elements.length;i++){
+            elements[i].innerText="unfollow"
+        }
+         
+      }
+
+     
+    
+ }
     useEffect(async function fn(){
+        
         let entries = await database.reels.orderBy("createdAt","desc").get();
         let arr=[];
         entries.forEach((entry) => {
@@ -377,16 +428,7 @@ function Reels(props){
                 {reels.map(function(object){
                     return(
                         <div className="video-container" style={{
-                            display:"flex",
-                           justifyContent:"center",
-                           height:"80vh",
-                           width:"30rem",
-                           backgroundColor:"white",
-                           border:"0.5px solid lightgray",
-                           marginBottom:"3rem",
-                           flexDirection:"column",
-                           marginLeft:"17rem",
-                           position:"relative"
+                           
                         }}>
                             <div className="header" style={{alignItems:"center",display:"flex",margin:"0.6rem",fontFamily:"cursive"}}>
                                 <img style={{height:"30px",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"0.5rem"}} src={object.object.authorDPUrl} />
@@ -395,7 +437,7 @@ function Reels(props){
                                 </div>
                                 <div style={{display:"flex",width:"50%",flexDirection:"row-reverse"}}>
                                     {user.user.profileUrl?user.user.profileUrl!=object.object.authorDPUrl?
-                                  <Button  variant="contained" color="primary" >follow</Button>:<></>:<></>}
+                                  <Button id={object.object.authorid} className={object.object.authorid+"follow"} variant="contained" onClick={handleFollow} color="primary" >{user.user.following.includes(object.object.authorid)?"unfollow":"follow"}</Button>:<></>:<></>}
                                   
                                 </div>
                                 
@@ -507,13 +549,13 @@ function Header(props){
     
 
     return(
-        <div style={styled1}>
+        <div className="mainheader" style={styled1}>
             
-            <Link to="/feed" style={{height:"100%",alignSelf:"flex-start",position:"absolute",left:"10rem",display:"flex",alignItems:'center',}}>
+            <Link className="instalogo" to="/feed" >
              <img style={{height:"100%",background:"transparent",objectFit:"contain"}} src={insta} />
             </Link>
 
-            <div to="/profile" style={{display:"flex", textDecoration:"none",height:"100%",width:"22%",alignItems:"center", position:"absolute",right:"9rem"}}>
+            <div className="secondaryHeader" >
                 <Link to="/profile" style={{display:"flex",alignItems:"center",textDecoration:"none",color:"black"}}>
                 <div style={{marginRight:"10px"}}>{user?.fullName}</div>
                     <img style={{
