@@ -463,7 +463,9 @@ function Reels(props){
                                     </Dialog>
                                     </div>
                                     
-                                    <span>{object.object.likes.length} Likes</span>
+                                    <span style=
+                                    {{marginRight:"1rem"}}>{object.object.likes.length} likes</span>
+                                    <span>{object.object.comments.length} comments</span>
                                 </div>
                                
                                 
