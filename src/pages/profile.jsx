@@ -12,12 +12,13 @@ import { object } from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
+import "./profiles.css"
 
 function Profile(){
     let {currentUser} = useContext(AuthContext);
     let [user,setUser] = useState(null);
     let [loader,setLoader] = useState(true);
-    let [reels,setReels] = useState([])
+    let [reelz,setReels] = useState()
     let [profile,setProfile] = useState(null);
     let[followers,setFollowers] = useState(0);
     let[following,setFollowing] = useState(0);
@@ -39,15 +40,17 @@ function Profile(){
         for(let i=0;i<reels.length;i++){
             
             let reel = await database.reels.doc(reels[i]).get();
-            arr.push(reel.data().videoUrl)
+            let obj = {"id":reels[i],"link":reel.data().videoUrl}
+            arr.push(obj)
         }
         
-        setReels(arr)
-        console.log(reels)
+       await setReels(arr)
+        //console.log(reelz)
         setLoader(false);
         
     },[])
     const handleClickOpen = (id) => {
+        console.log(id)
         setOpenId(id);
       }
       const handleClose = () => {
@@ -102,7 +105,7 @@ function Profile(){
                     
                     <div style={{display:"flex",justifyContent:"space-between"}}>
                         <div>
-                            <span style={{fontWeight:"600"}}>{reels.length}</span> posts
+                            <span style={{fontWeight:"600"}}>{reelz.length}</span> posts
                         </div>
 
                         <div>
@@ -133,16 +136,16 @@ function Profile(){
                 
             </div>
             <div style={{backgroundColor:"#FAFAFA",width:"72%",display:"flex",flexWrap:"wrap"}}>
-               {reels.map(function(obj){
+               {reelz.map(function(obj){
                    return(
                        
-                       <div style={{height:"16rem",width:"30%",margin:"10px"}}className="reel-container">
-                           <video style={{height:"100%",width:"100%"}} src={obj}/>
-                           <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === object.id}>
+                       <div onClick={() => handleClickOpen(obj.id)} style={{height:"16rem",width:"30%",margin:"10px"}}className="reel-container">
+                           <video className="reel" style={{height:"100%",width:"100%"}} src={obj.link}/>
+                           <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === obj.id}>
                                                 <MuiDialogContent>
-                                                <div className="modal" style={{display:"flex",height:"80vh",width:"40vw"}}>
-                                                    <div className="video-container" style={{width:"80%"}}>
-                                                        <video controls={true} src={obj} style={{width:"90%",height:"100%"}}></video>
+                                                <div className="modal" style={{display:"flex",justifyContent:"center"}}>
+                                                    <div className="video-container" style={{width:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
+                                                        <video controls={true} src={obj.link} style={{width:"90%",height:"100%"}}></video>
                                                     </div>
 
                                                     {/* <div style={{width:"50%"}} className="comment-section">

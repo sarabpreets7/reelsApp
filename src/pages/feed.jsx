@@ -25,6 +25,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
+import Comments from './comments';
 
 function Feed(){
 
@@ -218,6 +219,7 @@ function Reels(props){
     let [liked,setLike] = useState(false)
     let [totalLikes,handleLikes] = useState(0)
     let {currentUser} = useContext(AuthContext);
+    let [comment,updateComment] = useState("")
     const [openId, setOpenId] = useState(null);
     let uid = currentUser.uid;
     
@@ -301,6 +303,34 @@ function Reels(props){
     //     }
     // })
 }
+ const handleComment =(e)=>{
+     
+     
+     updateComment(e.target.value)
+
+ }
+ const handlePost =async(e)=>{
+     updateComment("")
+     console.log(e.target)
+    let id= await (e.target.parentNode.id)
+    console.log(id)
+    if(id){
+        let reel = await database.reels.doc(id).get();
+    let comments = reel.data().comments
+    let profileurl = (user.user.profileUrl)
+    let name = (user.user.fullName)
+    let newcmmt = {"name": name,"comment":comment,"dpurl":profileurl}
+    console.log(comments)
+    database.reels.doc(id).update({
+        
+        "comments":[...comments,newcmmt]
+    })
+    }
+    
+    
+
+    
+ }
     useEffect(async function fn(){
         let entries = await database.reels.orderBy("createdAt","desc").get();
         let arr=[];
@@ -402,12 +432,25 @@ function Reels(props){
                                                             </div>
                                                         </div>
 
-                                                        <div className="commentss" style={{height:"65%"}}>
-
+                                                        <div className="commentss" style={{height:"65%",overflowY:"auto"}}>
+                                                        {
+                                                                object.object.comments.length==0?
+                                                                <div>
+                                                                    <h2>No comments yet...</h2>
+                                                                </div>:
+                                                                object.object.comments.map((comment)=>(
+                                                                <div className='comment-div' style={{display:"flex",alignItems:"center"}}>
+                                                                    {/* <Avatar src={comment.uUrl}  className={classes.da}/> */}
+                                                                    <img style={{height:"2.3rem",background:"transparent",objectFit:"contain",borderRadius:"50%",marginRight:"3.4rem",margin:"1.2rem"}} src={comment.dpurl} /><p><span style={{fontWeight:'bold',display:'inline-block'}}>{comment.name}</span>&nbsp;&nbsp;{comment.comment}</p>
+                                                                </div>
+                                                                ))
+                                                            
+                                                                }
+                                                           
                                                         </div>
                                                         <div className="comment-section" style={{width:"100%",display:"flex",alignItems:"center"}}>
-                                                            <TextField style={{width:"75%"}}label="Add a Comment"></TextField>
-                                                            <Button variant="contained">POST</Button>
+                                                            <TextField  onChange={handleComment} value={comment} style={{width:"75%"}}label="Add a Comment"></TextField>
+                                                            <Button id={object.id} onClick={handlePost} variant="contained">POST</Button>
                                                         </div>
 
                                                     </div>
