@@ -231,7 +231,11 @@ function Reels(props){
         e.target.muted = !e.target.muted;
     }
     const handleLike = async (tar)=>{
-        console.log(tar)
+        let likel = document.getElementById(tar+"like")
+        let no = parseInt(likel.innerText.split(" ")[0])
+        console.log(no)
+        
+       
         let el = await document.getElementById(tar+"heart")
         console.log(el)
         let reel = await database.reels.doc(tar).get()
@@ -246,7 +250,7 @@ function Reels(props){
             })
             
             el.style.color="lightgray"
-            
+            no--;
 
         }
 
@@ -255,9 +259,10 @@ function Reels(props){
                 "likes":[...likes,uid]
             })
             el.style.color="red"
-
+            no++;
             
         }
+        likel.innerText= no+" likes"
         
 
         
@@ -463,7 +468,7 @@ function Reels(props){
                                     </Dialog>
                                     </div>
                                     
-                                    <span style=
+                                    <span id={object.id+"like"} className="likess" style=
                                     {{marginRight:"1rem"}}>{object.object.likes.length} likes</span>
                                     <span>{object.object.comments.length} comments</span>
                                 </div>
