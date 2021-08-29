@@ -3,3 +3,27 @@
 .reel:hover{
     cursor: pointer;
 }
+
+.mainContainer{
+    background-color:#FAFAFA;
+    width:72%;
+    display:flex;
+    flex-wrap:wrap;
+}
+.reel-container{
+    height:16rem;
+    width:30%;
+    margin:10px
+}
+@media only screen and (max-width: 840px) { 
+
+    .mainContainer{
+        width:95%
+    }
+}
+
+@media only screen and( max-width:640px){
+    .mainContainer{
+        width:100%
+    }
+}

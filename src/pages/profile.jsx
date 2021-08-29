@@ -135,17 +135,17 @@ function Profile(){
                 </div>
                 
             </div>
-            <div style={{backgroundColor:"#FAFAFA",width:"72%",display:"flex",flexWrap:"wrap"}}>
+            <div className="mainContainer" >
                {reelz.map(function(obj){
                    return(
                        
-                       <div onClick={() => handleClickOpen(obj.id)} style={{height:"16rem",width:"30%",margin:"10px"}}className="reel-container">
-                           <video className="reel" style={{height:"100%",width:"100%"}} src={obj.link}/>
+                       <div onClick={() => handleClickOpen(obj.id)} className="reel-container">
+                      <video className="reel" style={{height:"100%",width:"100%"}} src={obj.link}/>
                            <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === obj.id}>
                                                 <MuiDialogContent>
-                                                <div className="modal" style={{display:"flex",justifyContent:"center"}}>
-                                                    <div className="video-container" style={{width:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
-                                                        <video controls={true} src={obj.link} style={{width:"90%",height:"100%"}}></video>
+                                                <div className="modall" style={{display:"flex",justifyContent:"center",width:"100%",height:"100%"}}>
+                                                    <div className style={{width:"100%",height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
+                                                        <video controls={true} src={obj.link} style={{width:"110%",height:"80vh"}}></video>
                                                     </div>
 
                                                     {/* <div style={{width:"50%"}} className="comment-section">
@@ -155,15 +155,12 @@ function Profile(){
                                                                 {object.object.authorName}
                                                             </div>
                                                         </div>
-
                                                         <div className="commentss" style={{height:"65%"}}>
-
                                                         </div>
                                                         <div className="comment-section" style={{width:"100%",display:"flex",alignItems:"center"}}>
                                                             <TextField style={{width:"75%"}}label="Add a Comment"></TextField>
                                                             <Button variant="contained">POST</Button>
                                                         </div>
-
                                                     </div> */}
                                                     
 

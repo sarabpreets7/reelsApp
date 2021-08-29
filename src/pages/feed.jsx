@@ -50,7 +50,7 @@ function Feed(){
 
     return(
         loader?<img src={instaLoad}></img>:
-        <div style={{overflow:"hidden",boxSizing:"border-box",margin:"0"}}>
+        <div style={{overflow:"hidden",boxSizing:"border-box",margin:"0",height:"100vh"}}>
             <Header user = {user}></Header>
             <div style={{display:"flex"}}>
                 <UploadButtons user={user} uid={currentUser.uid} ></UploadButtons>
@@ -467,7 +467,7 @@ function Reels(props){
                                     <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === object.id}>
                                                 <MuiDialogContent>
                                                 <div className="modal" style={{display:"flex",height:"80vh",width:"60vw"}}>
-                                                    <div className="video-container" style={{width:"50%"}}>
+                                                    <div className="video-containerr" style={{width:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}>
                                                         <video controls={true} src={object.object.videoUrl} style={{width:"90%",height:"100%"}}></video>
                                                     </div>
 
